@@ -22,3 +22,20 @@ class Patient(MongoModel):
     medical_image = fields.ImageField()
     ECG_image = fields.ImageField()
     datetimes = fields.ListField()
+
+
+def add_patient_to_db():
+    pass
+
+
+def check_keys():
+    pass
+
+
+def validate_inputs():
+    pass
+
+
+@app.route("/add_new_patient", methods=["POST"])
+def post_add_patient_to_db():
+    pass
