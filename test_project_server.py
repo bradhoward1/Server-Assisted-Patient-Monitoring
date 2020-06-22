@@ -12,3 +12,54 @@ def test_check_keys():
     answer = check_keys(in_dict)
     expected = ["color", "shape", "dimension"]
     assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [({"medical_record_number": 123,
+                            "patient_name": "Brad_Howard",
+                            "medical_image": "something.something",
+                            "heart_rate": 55,
+                            "ECG_image": "again.something"}, True),
+                          ({"medical_record_number": "123",
+                            "patient_name": "Brad_Howard",
+                            "medical_image": "something.something",
+                            "heart_rate": 55,
+                            "ECG_image": "again.something"},
+                              "There was an unacceptable input, try again"),
+                          ({"medical_record_number": 123,
+                            "heart_rate": 55,
+                            "ECG_image": "again.something"}, True),
+                          ({"medical_record_number": 123,
+                            "patient_name": 22,
+                            "medical_image": "something.something",
+                            "heart_rate": 55,
+                            "ECG_image": "again.something"},
+                              "There was an unacceptable input, try again"),
+                          ({"medical_record_number": 123,
+                            "patient_name": "Brad_Howard",
+                            "medical_image": 54,
+                            "heart_rate": 55,
+                            "ECG_image": "again.something"},
+                              "There was an unacceptable input, try again"),
+                          ({"medical_record_number": 123,
+                            "patient_name": "Brad_Howard",
+                            "medical_image": "something.something",
+                            "heart_rate": "55",
+                            "ECG_image": "again.something"},
+                              "There was an unacceptable input, try again"),
+                          ({"medical_record_number": "123",
+                            "patient_name": "Brad_Howard",
+                            "medical_image": "something.something",
+                            "heart_rate": 55,
+                            "ECG_image": 32},
+                              "There was an unacceptable input, try again"),
+                          ({"medical_record_number": "123",
+                            "patient_name": "Brad_Howard",
+                            "medical_image": "something.something",
+                            "heart_rate": "55",
+                            "ECG_image": "again.something"},
+                              "There was an unacceptable input, try again")])
+def test_validate_inputs(result, expected):
+    from project_server import validate_inputs
+    answer = validate_inputs(result)
+    assert answer == expected

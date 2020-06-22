@@ -28,6 +28,10 @@ class Patient(MongoModel):
     datetimes = fields.ListField()
 
 
+def __init__():
+    print("Server is on.")
+
+
 def add_patient_to_db():
     pass
 
@@ -37,14 +41,41 @@ def check_keys(in_dict):
     return my_keys
 
 
-def validate_inputs():
-    pass
+def validate_inputs(in_dict):
+    keys_present = check_keys(in_dict)
+    for key in keys_present:
+        if key == "medical_record_number":
+            if type(in_dict[key]) == int:
+                continue
+            else:
+                return "There was an unacceptable input, try again"
+        if key == "patient_name":
+            if type(in_dict[key]) == str:
+                continue
+            else:
+                return "There was an unacceptable input, try again"
+        if key == "medical_image":
+            if type(in_dict[key]) == str:
+                continue
+            else:
+                return "There was an unacceptable input, try again"
+        if key == "heart_rate":
+            if type(in_dict[key]) == int:
+                continue
+            else:
+                return "There was an unacceptable input, try again"
+        if key == "ECG_image":
+            if type(in_dict[key]) == str:
+                continue
+            else:
+                return "There was an unacceptable input, try again"
+    return True
 
 
 @app.route("/add_new_patient", methods=["POST"])
 def post_add_patient_to_db():
     pass
 
+
 if __name__ == '__main__':
-    check_keys({"blue": 1,
-                "red": 2})
+    __init__()
