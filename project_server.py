@@ -3,6 +3,7 @@
 from flask import Flask, request, jsonify
 from datetime import datetime
 from pymodm import connect, MongoModel, fields
+import PIL
 
 # connect("mongodb+srv://brad_howard:NA@cluster0-lucsp.mongodb.net/random_db?retryWrites=true&w=majority")
 
@@ -14,6 +15,9 @@ from pymodm import connect, MongoModel, fields
 #     bob.update({ "$push": { "nums": { "$each": [ 90, 92, 85, 20 ] } } })
 #     ####pymodm.random_db.update({ "$push": { nums: { "$each":[90,92,85]}}})
 #     ####bob_user.save()
+
+app = Flask(__name__)
+
 
 class Patient(MongoModel):
     mr_number = fields.IntegerField(primary_key=True)
@@ -28,8 +32,9 @@ def add_patient_to_db():
     pass
 
 
-def check_keys():
-    pass
+def check_keys(in_dict):
+    my_keys = list(in_dict.keys())
+    return my_keys
 
 
 def validate_inputs():
@@ -39,3 +44,7 @@ def validate_inputs():
 @app.route("/add_new_patient", methods=["POST"])
 def post_add_patient_to_db():
     pass
+
+if __name__ == '__main__':
+    check_keys({"blue": 1,
+                "red": 2})
