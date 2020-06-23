@@ -6,7 +6,7 @@ from pymodm import connect, MongoModel, fields
 import PIL
 
 connect("mongodb+srv://brad_howard:NA@cluster0-lucsp.mongodb.net"
-    "/another_rando?retryWrites=true&w=majority")
+        "/another_rando?retryWrites=true&w=majority")
 
 
 app = Flask(__name__)
@@ -16,8 +16,8 @@ class Patient(MongoModel):
     mr_number = fields.IntegerField(primary_key=True)
     name = fields.CharField()
     heart_rates = fields.ListField()
-    medical_image = fields.CharField()
-    ECG_image = fields.CharField()
+    medical_images = fields.ListField()
+    ECG_images = fields.ListField()
     datetimes = fields.ListField()
 
 # if __name__ == '__main__':
@@ -47,7 +47,7 @@ def add_new_patient_to_db(in_dict):
         elif key == "patient_name":
             new_patient.name = in_dict[key]
         elif key == "medical_image":
-            new_patient.medical_image = in_dict[key]
+            new_patient.medical_images = [in_dict[key]]
         elif key == "heart_rate":
             new_patient.heart_rates = [in_dict[key]]
             recorded_datetime = datetime.now()
@@ -55,7 +55,7 @@ def add_new_patient_to_db(in_dict):
                     recorded_datetime,  "%Y-%m-%d %H:%M:%S")
             new_patient.datetimes = [string_recorded_datetime]
         elif key == "ECG_image":
-            new_patient.ECG_image = in_dict[key]
+            new_patient.ECG_images = [in_dict[key]]
         new_patient.save()
     return True
 
@@ -72,9 +72,9 @@ def edit_existing_patient(in_dict):
         elif key == "medical_image":
             existing_patient = Patient.objects.raw({"_id": in_dict
                                                     ["medical_record_number"]
-                                                    }).first()
-            existing_patient.medical_image = in_dict[key]
-            existing_patient.save()
+                                                    })
+            existing_patient.update({"$push": {"medical_images":
+                                    in_dict['medical_image']}})
         elif key == "heart_rate":
             existing_patient = Patient.objects.raw({"_id": in_dict
                                                     ["medical_record_number"]
@@ -89,9 +89,9 @@ def edit_existing_patient(in_dict):
         elif key == "ECG_image":
             existing_patient = Patient.objects.raw({"_id": in_dict
                                                     ["medical_record_number"]
-                                                    }).first()
-            existing_patient.ECG_image = in_dict[key]
-            existing_patient.save()
+                                                    })
+            existing_patient.update({"$push": {"ECG_images":
+                                    in_dict['ECG_image']}})
     return True
 
 
@@ -163,7 +163,7 @@ def patient_list():
 @app.route("/patient_list", methods=["GET"])
 def get_patient_list():
     my_patient_list = get_patient_list()
-    return my_patient_list
+    return my_patient_lists
 
 
 if __name__ == '__main__':
