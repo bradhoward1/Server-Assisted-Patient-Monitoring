@@ -5,8 +5,8 @@ from datetime import datetime
 from pymodm import connect, MongoModel, fields
 import PIL
 
-connect("mongodb+srv://brad_howard:NA@cluster0-"
-        "lucsp.mongodb.net/random_db?retryWrites=true&w=majority")
+connect("mongodb+srv://brad_howard:NA@cluster0-lucsp.mongodb.net"
+    "/another_rando?retryWrites=true&w=majority")
 
 
 app = Flask(__name__)
@@ -152,6 +152,21 @@ def post_add_patient_to_db():
     else:
         return "Not an acceptable post, try again", 400
 
+
+def patient_list():
+    my_patient_list = list()
+    for patient in Patient.objects.raw({}):
+        my_patient_list.append(patient.mr_number)
+    return my_patient_list
+
+
+@app.route("/patient_list", methods=["GET"])
+def get_patient_list():
+    my_patient_list = get_patient_list()
+    return my_patient_list
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
+    # patient_list()
