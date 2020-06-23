@@ -5,16 +5,9 @@ from datetime import datetime
 from pymodm import connect, MongoModel, fields
 import PIL
 
-# connect("mongodb+srv://brad_howard:NA@cluster0-lucsp.mongodb.net/random_db?retryWrites=true&w=majority")
+connect("mongodb+srv://brad_howard:NA@cluster0-"
+        "lucsp.mongodb.net/random_db?retryWrites=true&w=majority")
 
-
-# if __name__ == '__main__':
-#     u = Patient(mr_number=123, name="Brad",nums=[9])
-#     u.save()
-#     bob=Patient.objects.raw({"_id": 123})
-#     bob.update({ "$push": { "nums": { "$each": [ 90, 92, 85, 20 ] } } })
-#     ####pymodm.random_db.update({ "$push": { nums: { "$each":[90,92,85]}}})
-#     ####bob_user.save()
 
 app = Flask(__name__)
 
@@ -23,17 +16,48 @@ class Patient(MongoModel):
     mr_number = fields.IntegerField(primary_key=True)
     name = fields.CharField()
     heart_rates = fields.ListField()
-    medical_image = fields.ImageField()
-    ECG_image = fields.ImageField()
+    medical_image = fields.CharField()
+    ECG_image = fields.CharField()
     datetimes = fields.ListField()
+
+# if __name__ == '__main__':
+#     u = Patient(mr_number=123, name="Brad",nums=[9])
+#     u.save()
+#     # bob=Patient.objects.raw({"_id": 124})
+#     bob = Patient()
+#     bob.mr_number = 5
+#     bob.save()
+#     #print("bob is {}".format(bob_user))
+#     #bob_user.update({ "$push": { "nums":{ "$each": [ 90, 92, 85, 20 ] } } })
+#     # bob_user.save()
+#     ####pymodm.random_db.update({ "$push": { nums: { "$each":[90,92,85]}}})
+#     ####bob_user.save()
 
 
 def __init__():
     print("Server is on.")
 
 
-def add_patient_to_db():
-    pass
+def add_new_patient_to_db(in_dict):
+    new_patient = Patient()
+    keys_present = check_keys(in_dict)
+    for key in keys_present:
+        if key == "medical_record_number":
+            new_patient.mr_number = in_dict[key]
+        elif key == "patient_name":
+            new_patient.name = in_dict[key]
+        elif key == "medical_image":
+            new_patient.medical_image = in_dict[key]
+        elif key == "heart_rate":
+            new_patient.heart_rates = in_dict[key]
+            recorded_datetime = datetime.now()
+            string_recorded_datetime = datetime.strftime(
+                    recorded_datetime,  "%Y-%m-%d %H:%M:%S")
+            new_patient.datetimes = string_recorded_datetime
+        elif key == "ECG_image":
+            new_patient.ECG_image = in_dict[key]
+        new_patient.save()
+        return True
 
 
 def check_keys(in_dict):
@@ -79,3 +103,7 @@ def post_add_patient_to_db():
 
 if __name__ == '__main__':
     __init__()
+    # add_new_patient_to_db({"medical_record_number": 16,
+    #                         "patient_name": "Brad",
+    #                         "medical_image": "jpeg_image",
+    #                         "ECG_image": "second_jpeg_image"})

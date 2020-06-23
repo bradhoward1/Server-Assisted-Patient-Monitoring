@@ -63,3 +63,17 @@ def test_validate_inputs(result, expected):
     from project_server import validate_inputs
     answer = validate_inputs(result)
     assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [({"medical_record_number": 16,
+                            "patient_name": "Brad",
+                            "medical_image": "jpeg_image",
+                            "ECG_image": "second_jpeg_image"}, True),
+                          ({"medical_record_number": 16,
+                            "medical_image": "jpeg_image",
+                            "ECG_image": "second_jpeg_image"}, True)])
+def test_add_new_patient_to_db(result, expected):
+    from project_server import add_new_patient_to_db
+    answer = add_new_patient_to_db(result)
+    assert answer == expected
