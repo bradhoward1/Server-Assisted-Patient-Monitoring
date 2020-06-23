@@ -49,15 +49,15 @@ def add_new_patient_to_db(in_dict):
         elif key == "medical_image":
             new_patient.medical_image = in_dict[key]
         elif key == "heart_rate":
-            new_patient.heart_rates = in_dict[key]
+            new_patient.heart_rates = [in_dict[key]]
             recorded_datetime = datetime.now()
             string_recorded_datetime = datetime.strftime(
                     recorded_datetime,  "%Y-%m-%d %H:%M:%S")
-            new_patient.datetimes = string_recorded_datetime
+            new_patient.datetimes = [string_recorded_datetime]
         elif key == "ECG_image":
             new_patient.ECG_image = in_dict[key]
         new_patient.save()
-        return True
+    return True
 
 
 def edit_existing_patient(in_dict):
@@ -79,8 +79,8 @@ def edit_existing_patient(in_dict):
             existing_patient = Patient.objects.raw({"_id": in_dict
                                                     ["medical_record_number"]
                                                     })
-            existing_patient.update({"$push": {"heart_rates": in_dict
-                                     ['heart_rate']}})
+            existing_patient.update({"$push": {"heart_rates":
+                                    in_dict['heart_rate']}})
             recorded_datetime = datetime.now()
             string_recorded_datetime = datetime.strftime(
                     recorded_datetime,  "%Y-%m-%d %H:%M:%S")
@@ -133,8 +133,25 @@ def validate_inputs(in_dict):
 
 @app.route("/add_new_patient", methods=["POST"])
 def post_add_patient_to_db():
-    pass
+    in_dict = request.get_json()
+    var = validate_inputs(in_dict)
+    if var is True:
+        try:
+            presence_check = Patient.objects.get({"_id":
+                                                 in_dict
+                                                 ["medical_record_number"]})
+        except Patient.DoesNotExist:
+            presence_check = False
+        if presence_check is not False:
+            edit_existing_patient(in_dict)
+            return "Good post made to database", 200
+        else:
+            add_new_patient_to_db(in_dict)
+            return "Good new post made to database", 200
 
+    else:
+        return "Not an acceptable post, try again", 400
 
 if __name__ == '__main__':
     __init__()
+    app.run()
