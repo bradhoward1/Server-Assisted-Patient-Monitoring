@@ -226,12 +226,12 @@ def get_medical_image_list(mr_num):
 def validate_ECG_image_timestamp(in_dict):
     my_keys = list(in_dict.keys())
     for key in my_keys:
-        if key is "patient":
+        if key == "patient":
             if type(in_dict[key]) == int:
                 continue
             else:
                 return "A valid patient id was not provided, try again"
-        if key is "timestamp":
+        if key == "timestamp":
             if type(in_dict[key]) == str:
                 continue
             else:
@@ -250,6 +250,17 @@ def ECG_image_timestamp(in_dict):
     index = patient_timestamps.index(patient_timestamp)
     patient_ECG_output = patient_ECG_images[index]
     return patient_ECG_output
+
+
+@app.route("/ECG_image_timestamp", methods=["POST"])
+def post_ECG_image_timestamp():
+    in_dict = request.get_json()
+    tester = validate_ECG_image_timestamp(in_dict)
+    if tester is True:
+        patient_ECG_output = ECG_image_timestamp(in_dict)
+        return patient_ECG_output, 200
+    else:
+        return "Not a valid input, try again", 400
 
 
 if __name__ == '__main__':
