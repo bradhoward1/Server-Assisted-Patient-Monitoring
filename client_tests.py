@@ -11,6 +11,8 @@ out = {"medical_record_number": 101,
        "medical_image": ("word", "heard"),
        "ECG_image": ("second_jpeg_image",
                      "asd;lkfad;lfkjdfl;aksjf")}
+print(type(out["medical_image"]))
+print(type(out["ECG_image"]))
 r = requests.post(host + "/add_new_patient", json=out)
 print("{}, {}".format(r.text, r.status_code))
 
@@ -95,7 +97,7 @@ print("{}, {}".format(r.text, r.status_code))
 
 
 out = {"patient": 101,
-       "timestamp": "2020-06-24 11:17:06"}
+       "timestamp": "2020-06-24 12:09:31"}
 r = requests.post(host + "/ECG_image_timestamp", json=out)
 print("{}, {}".format(r.text, r.status_code))
 

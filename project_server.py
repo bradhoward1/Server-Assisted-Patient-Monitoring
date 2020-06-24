@@ -101,8 +101,12 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "medical_image":
-            if type(in_dict[key]) == list:
+            if type(in_dict[key]) != (tuple or list):
+                return "There was an unacceptable input, try again"
+            elif type(in_dict[key]) == tuple:
                 continue
+            elif type(in_dict[key] == list):
+                in_dict[key] = tuple(in_dict[key])
             else:
                 return "There was an unacceptable input, try again"
         if key == "heart_rate":
@@ -111,8 +115,12 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "ECG_image":
-            if type(in_dict[key]) == list:
+            if type(in_dict[key]) != (tuple or list):
+                return "There was an unacceptable input, try again"
+            elif type(in_dict[key]) == tuple:
                 continue
+            elif type(in_dict[key] == list):
+                in_dict[key] = tuple(in_dict[key])
             else:
                 return "There was an unacceptable input, try again"
     return True
@@ -122,7 +130,6 @@ def validate_inputs(in_dict):
 def post_add_patient_to_db():
     in_dict = request.get_json()
     var = validate_inputs(in_dict)
-    print(var)
     if var is True:
         try:
             presence_check = Patient.objects.get({"_id":
@@ -136,7 +143,6 @@ def post_add_patient_to_db():
         else:
             add_new_patient_to_db(in_dict)
             return "Good new post made to database", 200
-
     else:
         return "Not an acceptable post, try again", 400
 
@@ -233,7 +239,7 @@ def validate_ECG_image_timestamp(in_dict):
             else:
                 return "A valid patient id was not provided, try again"
         if key == "timestamp":
-            if type(in_dict[key]) == list:
+            if type(in_dict[key]) == str:
                 continue
             else:
                 return "A valid timestamp was not provided, try again"
@@ -257,9 +263,11 @@ def ECG_image_timestamp(in_dict):
 def post_ECG_image_timestamp():
     in_dict = request.get_json()
     tester = validate_ECG_image_timestamp(in_dict)
+    print(tester)
     if tester is True:
         patient_ECG_output = ECG_image_timestamp(in_dict)
-        return patient_ECG_output, 200
+        patient_ECG_output = tuple(patient_ECG_output)
+        return jsonify(patient_ECG_output), 200
     else:
         return "Not a valid input, try again", 400
 
