@@ -70,8 +70,9 @@ def test_validate_inputs(result, expected):
                             "patient_name": "Brad",
                             "medical_image": "jpeg_image",
                             "ECG_image": "second_jpeg_image"}, True),
-                          ({"medical_record_number": 16,
+                          ({"medical_record_number": 17,
                             "medical_image": "jpeg_image",
+                            "heart_rate": 67,
                             "ECG_image": "second_jpeg_image"}, True)])
 def test_add_new_patient_to_db(result, expected):
     from project_server import add_new_patient_to_db
@@ -88,4 +89,13 @@ def test_add_new_patient_to_db(result, expected):
 def test_edit_existing_patient(result, expected):
     from project_server import edit_existing_patient
     answer = edit_existing_patient(result)
+    assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [(16, ("Brad", 56, "second_jpeg_image")),
+                          (17, (None, 67, "second_jpeg_image"))])
+def test_name_latest_hr_and_ECG_image(result, expected):
+    from project_server import name_latest_hr_and_ECG_image
+    answer = name_latest_hr_and_ECG_image(result)
     assert answer == expected

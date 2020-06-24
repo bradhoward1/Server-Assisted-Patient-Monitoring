@@ -166,6 +166,19 @@ def get_patient_list():
     return my_patient_lists
 
 
+def name_latest_hr_and_ECG_image(mr_num):
+    mr_num = int(mr_num)
+    patient = Patient.objects.raw({"_id": mr_num}).first()
+    patient_name = patient.name
+    patient_heart_rates = patient.heart_rates
+    patient_ECG_images = patient.ECG_images
+    size_of_hr_list = len(patient_heart_rates)
+    size_of_patient_ECG_images = len(patient_ECG_images)
+    latest_hr = patient_heart_rates[size_of_hr_list-1]
+    latest_ECG_image = patient_ECG_images[size_of_patient_ECG_images-1]
+    return patient_name, latest_hr, latest_ECG_image
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
