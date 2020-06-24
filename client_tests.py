@@ -76,6 +76,10 @@ r = requests.post(host + "/add_new_patient", json=out)
 print("{}, {}".format(r.text, r.status_code))
 
 
+r = requests.get(host + "/patient_list")
+print("{}, {}".format(r.text, r.status_code))
+
+
 r = requests.get(host + "/name_hr_ecg/102")
 print("{}, {}".format(r.text, r.status_code))
 
