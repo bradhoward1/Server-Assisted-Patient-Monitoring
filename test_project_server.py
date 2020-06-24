@@ -107,9 +107,20 @@ def test_name_latest_hr_and_ECG_image(result, expected):
 
 
 @pytest.mark.parametrize("result, expected",
-                         [(16, list)])
+                         [(16, list),
+                          (17, list)])
 def test_timestamps_list(result, expected):
     from project_server import timestamps_list
     answer = timestamps_list(result)
+    answer = type(answer)
+    assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [(16, list),
+                          (17, list)])
+def test_medical_image_list(result, expected):
+    from project_server import medical_image_list
+    answer = medical_image_list(result)
     answer = type(answer)
     assert answer == expected

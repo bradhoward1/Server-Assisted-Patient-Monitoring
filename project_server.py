@@ -207,6 +207,13 @@ def get_timestamps_list(mr_num):
         return "Unable to retrieve list of timestamps", 400
 
 
+def medical_image_list(mr_num):
+    mr_num = int(mr_num)
+    patient = Patient.objects.raw({"_id": mr_num}).first()
+    patient_image_list = patient.medical_images
+    return patient_image_list
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
