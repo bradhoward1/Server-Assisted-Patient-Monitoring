@@ -447,6 +447,7 @@ def run_ecg_from_gui(filename):
     metrics_dict = metrics(time_dur, extremes, count,
                            mean_hr, list_of_times, time, voltage)
     # metrics = json.load(in_file)
+    os.chdir("..")
     return metrics_dict
 
 

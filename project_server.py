@@ -91,7 +91,10 @@ def validate_inputs(in_dict):
     keys_present = check_keys(in_dict)
     for key in keys_present:
         if key == "medical_record_number":
-            if type(in_dict[key]) == int:
+            if type(in_dict[key]) == str:
+                in_dict[key] = int(in_dict[key])
+                continue
+            elif type(in_dict[key]) == int:
                 continue
             else:
                 return "There was an unacceptable input, try again"
