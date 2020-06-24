@@ -79,12 +79,16 @@ def test_validate_inputs(result, expected):
                          [({"medical_record_number": 16,
                             "patient_name": "Brad",
                             "heart_rate": 55,
-                            "medical_image": "jpeg_image",
-                            "ECG_image": "second_jpeg_image"}, True),
+                            "medical_image": ("jpeg_image",
+                                              "yeard"),
+                            "ECG_image": ("second_jpeg_image",
+                                          "yeard")}, True),
                           ({"medical_record_number": 17,
-                            "medical_image": "jpeg_image",
+                            "medical_image": ("jpeg_image",
+                                              "yeard"),
                             "heart_rate": 67,
-                            "ECG_image": "second_jpeg_image"}, True)])
+                            "ECG_image": ("second_jpeg_image",
+                                          "yeard")}, True)])
 def test_add_new_patient_to_db(result, expected):
     from project_server import add_new_patient_to_db
     answer = add_new_patient_to_db(result)
@@ -95,8 +99,10 @@ def test_add_new_patient_to_db(result, expected):
                          [({"medical_record_number": 16,
                             "patient_name": "Brad",
                             "heart_rate": 56,
-                            "medical_image": "jpeg_image",
-                            "ECG_image": "second_jpeg_image"}, True)])
+                            "medical_image": ("jpeg_image",
+                                              "yeard"),
+                            "ECG_image": ("second_jpeg_image",
+                                          "yeard")}, True)])
 def test_edit_existing_patient(result, expected):
     from project_server import edit_existing_patient
     answer = edit_existing_patient(result)
@@ -166,5 +172,28 @@ def test_ECG_image_timestamp():
     in_dict = {"patient": 16,
                "timestamp": pytest.global_variable_1}
     answer = ECG_image_timestamp(in_dict)
-    expected = "second_jpeg_image"
+    expected = ["second_jpeg_image", "yeard"]
+    assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [({"patient": 12,
+                            "file_name": "2020-06-23 23:11:10"},
+                           True),
+                          ({"patient": "12",
+                            "file_name": "2020-06-23 23:11:10"},
+                           "A valid patient id was not "
+                           "provided, try again"),
+                          ({"patient": 12,
+                            "file_name": 10},
+                           "A valid filename was not "
+                           "provided, try again"),
+                          ({"patient": 12,
+                            "file_name": "2020-06-23 23:11:10",
+                            "age": 10},
+                           "The input dictionary has "
+                           "unusable information, try again")])
+def test_validate_medical_image_specific(result, expected):
+    from project_server import validate_medical_image_specific
+    answer = validate_medical_image_specific(result)
     assert answer == expected

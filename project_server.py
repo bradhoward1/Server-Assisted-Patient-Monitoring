@@ -101,7 +101,9 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "medical_image":
-            if type(in_dict[key]) != (tuple or list):
+            if type(in_dict[key]) == str:
+                return "There was an unacceptable input, try again"
+            elif type(in_dict[key]) == int:
                 return "There was an unacceptable input, try again"
             elif type(in_dict[key]) == tuple:
                 continue
@@ -115,7 +117,9 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "ECG_image":
-            if type(in_dict[key]) != (tuple or list):
+            if type(in_dict[key]) == str:
+                return "There was an unacceptable input, try again"
+            elif type(in_dict[key]) == int:
                 return "There was an unacceptable input, try again"
             elif type(in_dict[key]) == tuple:
                 continue
@@ -130,6 +134,7 @@ def validate_inputs(in_dict):
 def post_add_patient_to_db():
     in_dict = request.get_json()
     var = validate_inputs(in_dict)
+    print(var)
     if var is True:
         try:
             presence_check = Patient.objects.get({"_id":
@@ -196,10 +201,14 @@ def timestamps_list(mr_num):
 
 
 def ECG_image_list(mr_num):
+    patient_list = list()
     mr_num = int(mr_num)
     patient = Patient.objects.raw({"_id": mr_num}).first()
     patient_ECG_list = patient.ECG_images
-    return patient_ECG_list
+    for patient in patient_ECG_list:
+        patient = patient[0]
+        patient_list.append(patient)
+    return patient_list
 
 
 @app.route("/ECG_timestamps/<mr_num>", methods=["GET"])
@@ -215,10 +224,14 @@ def get_timestamps_list(mr_num):
 
 
 def medical_image_list(mr_num):
+    patient_list = list()
     mr_num = int(mr_num)
     patient = Patient.objects.raw({"_id": mr_num}).first()
     patient_image_list = patient.medical_images
-    return patient_image_list
+    for patient in patient_image_list:
+        patient = patient[0]
+        patient_list.append(patient)
+    return patient_list
 
 
 @app.route("/medical_images/<mr_num>", methods=["GET"])
@@ -270,6 +283,24 @@ def post_ECG_image_timestamp():
         return jsonify(patient_ECG_output), 200
     else:
         return "Not a valid input, try again", 400
+
+
+def validate_medical_image_specific(in_dict):
+    my_keys = list(in_dict.keys())
+    for key in my_keys:
+        if key == "patient":
+            if type(in_dict[key]) == int:
+                continue
+            else:
+                return "A valid patient id was not provided, try again"
+        if key == "file_name":
+            if type(in_dict[key]) == str:
+                continue
+            else:
+                return "A valid filename was not provided, try again"
+        else:
+            return "The input dictionary has unusable information, try again"
+    return True
 
 
 if __name__ == '__main__':
