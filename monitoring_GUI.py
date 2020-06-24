@@ -19,11 +19,23 @@ def load_image_for_display(filename):
     return tk_image
 
 def convert_b64str_to_file(filename):
-image_bytes = base64.b64decode(b64_string)
-with open(new_filename, "wb") as out_file:
-    out_file.write(image_bytes)
+    image_bytes = base64.b64decode(b64_string)
+    with open(new_filename, "wb") as out_file:
+        out_file.write(image_bytes)
 
 def design_window():
 
     def cancel_cmd():
         root.destroy()
+
+    root = tk.Tk()
+    root.title("Monitoring Interface")
+
+    top_description = ttk.Label(root, text="Monitoring Interface")
+    top_description.grid(column=0, row=0, columnspan=2, sticky="W")
+
+    root.mainloop()
+    print("Finished")
+
+if __name__ == "__main__":
+    design_window()

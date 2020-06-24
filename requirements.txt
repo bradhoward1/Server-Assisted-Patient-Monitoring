@@ -6,3 +6,5 @@ pytest-pep8
 requests
 pymodm
 dnspython
+pillow
+matplotlib
