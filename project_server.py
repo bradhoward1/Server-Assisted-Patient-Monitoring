@@ -163,7 +163,7 @@ def patient_list():
 @app.route("/patient_list", methods=["GET"])
 def get_patient_list():
     my_patient_list = get_patient_list()
-    return my_patient_lists, 200
+    return jsonify(my_patient_lists), 200
 
 
 def name_latest_hr_and_ECG_image(mr_num):
@@ -186,9 +186,16 @@ def name_latest_hr_and_ECG_image(mr_num):
 def get_name_latest_hr_and_ECG_image(mr_num):
     contents = name_latest_hr_and_ECG_image(mr_num)
     if contents:
-        return contents, 200
+        return jsonify(contents), 200
     else:
         return "Unable to return the contents, try again", 400
+
+
+def timestamps_list(mr_num):
+    mr_num = int(mr_num)
+    patient = Patient.objects.raw({"_id": mr_num}).first()
+    patient_timestamp_list = patient.datetimes
+    return patient_timestamp_list
 
 
 if __name__ == '__main__':
