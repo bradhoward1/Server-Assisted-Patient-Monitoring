@@ -109,3 +109,9 @@ out = {"patient": 100,
        "whoops": "foo"}
 r = requests.post(host + "/ECG_image_timestamp", json=out)
 print("{}, {}".format(r.text, r.status_code))
+
+
+out = {"patient": 101,
+       "file_name": "word"}
+r = requests.post(host + "/get_medical_image", json=out)
+print("{}, {}".format(r.text, r.status_code))

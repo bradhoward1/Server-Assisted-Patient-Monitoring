@@ -318,6 +318,17 @@ def medical_image_filename(in_dict):
     return patient_image
 
 
+@app.route("/get_medical_image", methods=["POST"])
+def retrieve_medical_image():
+    in_dict = request.get_json()
+    var = validate_medical_image_specific(in_dict)
+    if var is True:
+        patient_image = medical_image_filename(in_dict)
+        return jsonify(patient_image), 200
+    else:
+        return "Unable to retrieve image", 400
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
