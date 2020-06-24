@@ -303,6 +303,21 @@ def validate_medical_image_specific(in_dict):
     return True
 
 
+def medical_image_filename(in_dict):
+    patient_file_names = list()
+    patient_images = list()
+    patient_id = in_dict["patient"]
+    patient_filename = in_dict["file_name"]
+    patient = Patient.objects.raw({"_id": patient_id}).first()
+    patient_medical_images = patient.medical_images
+    for image in patient_medical_images:
+        patient_file_names.append(image[0])
+        patient_images.append(image[1])
+    index = patient_file_names.index(patient_filename)
+    patient_image = patient_images[index]
+    return patient_image
+
+
 if __name__ == '__main__':
     __init__()
     app.run()

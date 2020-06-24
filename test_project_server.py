@@ -197,3 +197,12 @@ def test_validate_medical_image_specific(result, expected):
     from project_server import validate_medical_image_specific
     answer = validate_medical_image_specific(result)
     assert answer == expected
+
+
+def test_medical_image_filename():
+    from project_server import medical_image_filename
+    in_dict = {"patient": 16,
+               "file_name": "jpeg_image"}
+    answer = medical_image_filename(in_dict)
+    expected = "yeard"
+    assert answer == expected
