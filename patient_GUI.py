@@ -21,41 +21,41 @@ def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
     # Post request to server, create dictionary here
     out_dict = {}
     list_parameters = [name, HRS, Fig_name, ECG_to_server, med_record,
-                   Med_Image_FN, Conv_MedI]
+                       Med_Image_FN, Conv_MedI]
     # print(list_parameters)
     for parameter in list_parameters:
         if parameter == med_record:
-            if med_record == None or med_record == "":
+            if med_record is None or med_record == "":
                 return "Unable to process request"
             else:
                 out_dict["medical_record_number"] = med_record
         elif parameter == name:
-            if name == None or name == "":
+            if name is None or name == "":
                 continue
             else:
                 out_dict["patient_name"] = name
         elif parameter == HRS:
-            if HRS == None or HRS == "":
+            if HRS is None or HRS == "":
                 continue
             else:
                 out_dict["heart_rate"] = HRS
         elif parameter == Med_Image_FN:
-            if Med_Image_FN == None or Med_Image_FN == "":
+            if Med_Image_FN is None or Med_Image_FN == "":
                 continue
             else:
                 out_dict["medical_image"] = [Med_Image_FN]
         elif parameter == Conv_MedI:
-            if Conv_MedI == None or Conv_MedI == "":
+            if Conv_MedI is None or Conv_MedI == "":
                 continue
             else:
                 out_dict["medical_image"].append(Conv_MedI)
         elif parameter == Fig_name:
-            if Fig_name == None or Fig_name == "":
+            if Fig_name is None or Fig_name == "":
                 continue
             else:
                 out_dict["ECG_image"] = [Fig_name]
         elif parameter == ECG_to_server:
-            if ECG_to_server == None or ECG_to_server == "":
+            if ECG_to_server is None or ECG_to_server == "":
                 continue
             else:
                 out_dict["ECG_image"].append(ECG_to_server)
@@ -94,7 +94,8 @@ def design_window():
         root.destroy()
 
     def ok_button_work():
-        nonlocal name, HRS, Fig_name, ECG_to_server, med_record, Converted_IM, output
+        nonlocal name, HRS, Fig_name, ECG_to_server, med_record,
+        Converted_IM, output
         fn = file_name.get()
         print("Patient Medical Record Number is {}".
               format(medical_record_entry.get()))
@@ -105,7 +106,7 @@ def design_window():
         else:
             answers = run_ecg_from_gui(ECG_select.get())
         HRS = answers["mean_hr_bpm"]
-        if HRS != None:
+        if HRS is not None:
             HRS = round(HRS)
         name = name_entry.get()
         Time = answers["times"]
@@ -115,7 +116,7 @@ def design_window():
         HHR_label.grid(column=0, row=8)
         Fig_name = None
         ECG_to_server = None
-        if Time != None:
+        if Time is not None:
             plt.clf()
             plt.plot(Time, Voltage)
             plt.xlabel("Time (seconds)")
@@ -130,15 +131,13 @@ def design_window():
             ECG_to_server = convert_file_to_b64str(Fig_name)
         med_record = medical_record_entry.get()
         output = posting_method(name, HRS, Fig_name, ECG_to_server,
-                       med_record, fn, Converted_IM)
+                                med_record, fn, Converted_IM)
 
     def post_cmd():
         print("Running post command")
         fn = file_name.get()
         r = requests.post(host + "/add_new_patient", json=output)
         print("{}, {}".format(r.text, r.status_code))
-
-
 
     def upload_img():
         fn = file_name.get()
