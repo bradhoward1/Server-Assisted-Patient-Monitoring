@@ -163,7 +163,7 @@ def patient_list():
 @app.route("/patient_list", methods=["GET"])
 def get_patient_list():
     my_patient_list = get_patient_list()
-    return my_patient_lists
+    return my_patient_lists, 200
 
 
 def name_latest_hr_and_ECG_image(mr_num):
@@ -176,7 +176,19 @@ def name_latest_hr_and_ECG_image(mr_num):
     size_of_patient_ECG_images = len(patient_ECG_images)
     latest_hr = patient_heart_rates[size_of_hr_list-1]
     latest_ECG_image = patient_ECG_images[size_of_patient_ECG_images-1]
-    return patient_name, latest_hr, latest_ECG_image
+    out_dict = {"name": patient_name,
+                "latest_hr": latest_hr,
+                "latest_ECG_image": latest_ECG_image}
+    return out_dict
+
+
+@app.route("/name_hr_ecg/<mr_num>", methods=["GET"])
+def get_name_latest_hr_and_ECG_image(mr_num):
+    contents = name_latest_hr_and_ECG_image(mr_num)
+    if contents:
+        return contents, 200
+    else:
+        return "Unable to return the contents, try again", 400
 
 
 if __name__ == '__main__':
