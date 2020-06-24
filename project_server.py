@@ -214,6 +214,15 @@ def medical_image_list(mr_num):
     return patient_image_list
 
 
+@app.route("/medical_images/<mr_num>", methods=["GET"])
+def get_medical_image_list(mr_num):
+    contents = medical_image_list(mr_num)
+    if contents:
+        return jsonify(contents), 200
+    else:
+        return "Unable to retrieve list of medical images", 400
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
