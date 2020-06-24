@@ -444,7 +444,8 @@ def run_ecg_from_gui(filename):
     count = counting_peaks(voltage)
     mean_hr = heart_rate(time_dur, count)
     list_of_times = beats(time, voltage)
-    metrics_dict = metrics(time_dur, extremes, count, mean_hr, list_of_times, time, voltage)
+    metrics_dict = metrics(time_dur, extremes, count,
+                           mean_hr, list_of_times, time, voltage)
     # metrics = json.load(in_file)
     return metrics_dict
 

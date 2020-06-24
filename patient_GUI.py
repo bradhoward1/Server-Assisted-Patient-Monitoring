@@ -12,6 +12,16 @@ import base64
 import matplotlib.pyplot as plt
 
 
+def posting_method(HRS, Fig_name, ECG_to_server, med_record,
+                   Med_Image_FN, Conv_MedI):
+    # Post request to server, create dictionary here
+    print(HRS)
+    print(Fig_name)
+    # print(ECG_to_server)
+    print(med_record)
+    print(Med_Image_FN)
+
+
 def get_available_files():
     import os
     all_files = os.listdir("test_data/")
@@ -31,6 +41,7 @@ def load_image_for_display(filename):
     tk_image = ImageTk.PhotoImage(image_obj)
     return tk_image
 
+
 def convert_file_to_b64str(filename):
     with open(filename, "rb") as image_file:
         b64_bytes = base64.b64encode(image_file.read())
@@ -44,10 +55,8 @@ def design_window():
         root.destroy()
 
     def ok_button_work():
-        # create_window()
-        print("Database Entry:")
-        name = name_entry.get()
-        print("Name is: {} ".format(name))
+        nonlocal HRS, Fig_name, ECG_to_server, med_record, Converted_IM
+        fn = file_name.get()
         print("Patient Medical Record Number is {}".
               format(medical_record_entry.get()))
         print("Selected ECG file is {}".format(ECG_select.get()))
@@ -56,39 +65,51 @@ def design_window():
         HRS = round(answers["mean_hr_bpm"])
         Time = answers["times"]
         Voltage = answers["voltages"]
-        HHR_label = ttk.Label(root, text= "Mean Heart Rate: {} BPM".format(HRS))
+        HHR_label = ttk.Label(root, text="Mean Heart Rate: {} BPM".
+                              format(HRS))
         HHR_label.grid(column=0, row=8)
         plt.plot(Time, Voltage)
         plt.xlabel("Time (seconds)")
         plt.ylabel("Voltage (V)")
         plt.title("Voltage as a function of time")
-        plt.savefig("ECG.jpg")
-        ECG_trace = load_image_for_display("ECG.jpg")
+        Fig_name = ECG_select.get().split(".")[0] + ".jpg"
+        plt.savefig(Fig_name)
+        ECG_trace = load_image_for_display(Fig_name)
         image_label = ttk.Label(root, image=ECG_trace)
         image_label.grid(column=5, row=5)
         image_label.image = ECG_trace
-        ECG_to_server = convert_file_to_b64str(ECG_trace)
+        ECG_to_server = convert_file_to_b64str(Fig_name)
+        med_record = medical_record_entry.get()
+        posting_method(HRS, Fig_name, ECG_to_server,
+                       med_record, fn, Converted_IM)
 
+    def post_cmd():
+        print("Running post command")
+        fn = file_name.get()
+        posting_method(HRS, Fig_name, ECG_to_server,
+                       med_record, fn, Converted_IM)
+        print(HRS)
+        print(Fig_name)
+        # print(ECG_to_server)
+        print(med_record)
 
     def upload_img():
         fn = file_name.get()
         b64 = convert_file_to_b64str(fn)
-        # return_msg = send_b64image_to_server(b64)
-        # result_label.configure(text=return_msg)
+        return b64
 
     def get_picture():
+        nonlocal Converted_IM
         fn = filedialog.askopenfilename()
         file_name.set(fn)
         fn = file_name.get()
         tk_image = load_image_for_display(fn)
         image_label.configure(image=tk_image)
         image_label.image = tk_image
-        upload_img()
-
+        Converted_IM = upload_img()
 
     root = tk.Tk()
     root.title("Patient Interface")
-
 
     top_description = ttk.Label(root, text="Patient Interface")
     top_description.grid(column=0, row=0, columnspan=2, sticky="W")
@@ -97,7 +118,6 @@ def design_window():
     name_label.grid(column=2, row=0)
 
     name_entry = tk.StringVar()
-    name_entry.set("Enter your name")
     name_entry_box = ttk.Entry(root, width=30, textvariable=name_entry)
     name_entry_box.grid(column=2, row=1)
     ttk.Label(root, text="Patient ECG File").grid(column=2, row=3)
@@ -110,7 +130,11 @@ def design_window():
     ECG_box.grid(column=2, row=4)
 
     file_name = tk.StringVar()
-    # file_name_box = ttk.Entry(root, textvariable=file_name)
+    Converted_IM = None
+    HRS = None
+    Fig_name = None
+    ECG_to_server = None
+    med_record = None
     Pic_label = ttk.Label(root, text="Picture Upload")
     Pic_label.grid(column=3, row=3)
     Pic_button = ttk.Button(root, text="Upload", command=get_picture)
@@ -122,9 +146,11 @@ def design_window():
     cancel_button = ttk.Button(root, text="Cancel", command=cancel_cmd)
     cancel_button.grid(column=5, row=4)
 
+    send_button = ttk.Button(root, text="Send", command=post_cmd)
+    send_button.grid(column=5, row=2)
+
     ttk.Label(root, text="Patient Medical Record").grid(column=3, row=0)
     medical_record_entry = tk.StringVar()
-    medical_record_entry.set("Enter medical record #")
     medical_record_entry_box = ttk.Entry(root, width=30,
                                          textvariable=medical_record_entry)
     medical_record_entry_box.grid(column=3, row=1)
