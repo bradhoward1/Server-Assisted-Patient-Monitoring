@@ -101,7 +101,7 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "medical_image":
-            if type(in_dict[key]) == str:
+            if type(in_dict[key]) == list:
                 continue
             else:
                 return "There was an unacceptable input, try again"
@@ -111,7 +111,7 @@ def validate_inputs(in_dict):
             else:
                 return "There was an unacceptable input, try again"
         if key == "ECG_image":
-            if type(in_dict[key]) == str:
+            if type(in_dict[key]) == list:
                 continue
             else:
                 return "There was an unacceptable input, try again"
@@ -122,6 +122,7 @@ def validate_inputs(in_dict):
 def post_add_patient_to_db():
     in_dict = request.get_json()
     var = validate_inputs(in_dict)
+    print(var)
     if var is True:
         try:
             presence_check = Patient.objects.get({"_id":
@@ -232,7 +233,7 @@ def validate_ECG_image_timestamp(in_dict):
             else:
                 return "A valid patient id was not provided, try again"
         if key == "timestamp":
-            if type(in_dict[key]) == str:
+            if type(in_dict[key]) == list:
                 continue
             else:
                 return "A valid timestamp was not provided, try again"
