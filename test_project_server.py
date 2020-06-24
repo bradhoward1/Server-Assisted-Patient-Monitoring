@@ -1,7 +1,9 @@
 # test_project_server.py
 
 import pytest
-import datetime
+from datetime import datetime
+
+pytest.global_variable_1 = ""
 
 
 def test_check_keys():
@@ -107,11 +109,11 @@ def test_name_latest_hr_and_ECG_image(result, expected):
 
 
 @pytest.mark.parametrize("result, expected",
-                         [(16, list),
-                          (17, list)])
+                         [(16, list)])
 def test_timestamps_list(result, expected):
     from project_server import timestamps_list
     answer = timestamps_list(result)
+    pytest.global_variable_1 = answer[0]
     answer = type(answer)
     assert answer == expected
 
@@ -146,4 +148,13 @@ def test_medical_image_list(result, expected):
 def test_validate_ECG_image_timestamp(result, expected):
     from project_server import validate_ECG_image_timestamp
     answer = validate_ECG_image_timestamp(result)
+    assert answer == expected
+
+
+def test_ECG_image_timestamp():
+    from project_server import ECG_image_timestamp
+    in_dict = {"patient": 16,
+               "timestamp": pytest.global_variable_1}
+    answer = ECG_image_timestamp(in_dict)
+    expected = "second_jpeg_image"
     assert answer == expected

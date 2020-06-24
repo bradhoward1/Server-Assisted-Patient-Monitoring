@@ -242,7 +242,14 @@ def validate_ECG_image_timestamp(in_dict):
 
 
 def ECG_image_timestamp(in_dict):
-    pass
+    patient_id = in_dict["patient"]
+    patient_timestamp = in_dict["timestamp"]
+    patient = Patient.objects.raw({"_id": patient_id}).first()
+    patient_timestamps = patient.datetimes
+    patient_ECG_images = patient.ECG_images
+    index = patient_timestamps.index(patient_timestamp)
+    patient_ECG_output = patient_ECG_images[index]
+    return patient_ECG_output
 
 
 if __name__ == '__main__':
