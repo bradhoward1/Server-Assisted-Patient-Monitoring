@@ -109,6 +109,13 @@ def test_edit_existing_patient(result, expected):
     assert answer == expected
 
 
+def test_patient_list():
+    from project_server import patient_list
+    answer = patient_list()
+    expected = [16, 17]
+    assert answer == expected
+
+
 @pytest.mark.parametrize("result, expected",
                          [(16, list)])
 def test_timestamps_list(result, expected):

@@ -164,8 +164,9 @@ def patient_list():
 
 @app.route("/patient_list", methods=["GET"])
 def get_patient_list():
-    my_patient_list = get_patient_list()
-    return jsonify(my_patient_lists), 200
+    my_patient_list = patient_list()
+    print(my_patient_list)
+    return jsonify(my_patient_list), 200
 
 
 def name_latest_hr_and_ECG_image(mr_num):
