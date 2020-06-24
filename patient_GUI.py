@@ -9,6 +9,7 @@ from tkinter import filedialog
 import re
 from PIL import Image, ImageTk
 import base64
+import matplotlib.pyplot as plt
 
 
 def get_available_files():
@@ -16,6 +17,7 @@ def get_available_files():
     all_files = os.listdir("test_data/")
     files = [f for f in all_files if ".csv" in f]
     files.sort(key=lambda f: int(re.sub('\D', '', f)))
+    print(type(files))
     return files
 
 
@@ -51,13 +53,28 @@ def design_window():
         print("Selected ECG file is {}".format(ECG_select.get()))
         from ecg_analysis import run_ecg_from_gui
         answers = run_ecg_from_gui(ECG_select.get())
-        lst = [answers["duration"],
-               answers["voltage_extremes"],
-               answers["num_beats"],
-               answers["mean_hr_bpm"]]
         HRS = round(answers["mean_hr_bpm"])
+        Time = answers["times"]
+        Voltage = answers["voltages"]
         HHR_label = ttk.Label(root, text= "Mean Heart Rate: {} BPM".format(HRS))
         HHR_label.grid(column=0, row=8)
+        plt.plot(Time, Voltage)
+        plt.xlabel("Time (seconds)")
+        plt.ylabel("Voltage (V)")
+        plt.title("Voltage as a function of time")
+        plt.savefig("ECG.jpg")
+        ECG_trace = load_image_for_display("ECG.jpg")
+        image_label = ttk.Label(root, image=ECG_trace)
+        image_label.grid(column=5, row=5)
+        image_label.image = ECG_trace
+        ECG_to_server = convert_file_to_b64str(ECG_trace)
+
+
+    def upload_img():
+        fn = file_name.get()
+        b64 = convert_file_to_b64str(fn)
+        # return_msg = send_b64image_to_server(b64)
+        # result_label.configure(text=return_msg)
 
     def get_picture():
         fn = filedialog.askopenfilename()
@@ -66,12 +83,8 @@ def design_window():
         tk_image = load_image_for_display(fn)
         image_label.configure(image=tk_image)
         image_label.image = tk_image
+        upload_img()
 
-    def upload_img():
-        fn = file_name.get()
-        b64 = convert_file_to_b64str(fn)
-        return_msg = send_b64image_to_server(b64)
-        result_label.configure(text=return_msg)
 
     root = tk.Tk()
     root.title("Patient Interface")
