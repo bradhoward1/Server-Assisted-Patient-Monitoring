@@ -105,6 +105,13 @@ def test_timestamps_list(result, expected):
     assert answer == expected
 
 
+def test_ECG_image_list():
+    from project_server import ECG_image_list
+    answer = ECG_image_list(16)
+    expected = ["second_jpeg_image", "second_jpeg_image"]
+    assert answer == expected
+
+
 @pytest.mark.parametrize("result, expected",
                          [(16, dict)])
 def test_name_latest_hr_and_ECG_image(result, expected):

@@ -20,19 +20,6 @@ class Patient(MongoModel):
     ECG_images = fields.ListField()
     datetimes = fields.ListField()
 
-# if __name__ == '__main__':
-#     # u = Patient(mr_number=123, name="Brad",nums=[9])
-#     # u.save()
-#     bob=Patient.objects.raw({"_id": 123})
-#     #bob = Patient()
-#     #bob.mr_number = 5
-#     # bob.save()
-#     #print("bob is {}".format(bob_user))
-#     bob.update({ "$push": { "nums": 77878 } } )
-# #     # bob_user.save()
-# #     ####pymodm.random_db.update({ "$push": { nums: { "$each":[90,92,85]}}})
-# #     ####bob_user.save()
-
 
 def __init__():
     print("Server is on.")
@@ -201,9 +188,19 @@ def timestamps_list(mr_num):
     return patient_timestamp_list
 
 
+def ECG_image_list(mr_num):
+    mr_num = int(mr_num)
+    patient = Patient.objects.raw({"_id": mr_num}).first()
+    patient_ECG_list = patient.ECG_images
+    return patient_ECG_list
+
+
 @app.route("/ECG_timestamps/<mr_num>", methods=["GET"])
 def get_timestamps_list(mr_num):
-    contents = timestamps_list(mr_num)
+    timestamps = timestamps_list(mr_num)
+    images = ECG_image_list(mr_num)
+    contents = {"timestamps": timestamps,
+                "ECG_images": images}
     if contents:
         return jsonify(contents), 200
     else:
