@@ -223,6 +223,28 @@ def get_medical_image_list(mr_num):
         return "Unable to retrieve list of medical images", 400
 
 
+def validate_ECG_image_timestamp(in_dict):
+    my_keys = list(in_dict.keys())
+    for key in my_keys:
+        if key is "patient":
+            if type(in_dict[key]) == int:
+                continue
+            else:
+                return "A valid patient id was not provided, try again"
+        if key is "timestamp":
+            if type(in_dict[key]) == str:
+                continue
+            else:
+                return "A valid timestamp was not provided, try again"
+        else:
+            return "The input dictionary has unusable information, try again"
+    return True
+
+
+def ECG_image_timestamp(in_dict):
+    pass
+
+
 if __name__ == '__main__':
     __init__()
     app.run()

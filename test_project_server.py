@@ -124,3 +124,27 @@ def test_medical_image_list(result, expected):
     answer = medical_image_list(result)
     answer = type(answer)
     assert answer == expected
+
+
+@pytest.mark.parametrize("result, expected",
+                         [({"patient": 12,
+                            "timestamp": "2020-06-23 23:11:10"},
+                           True),
+                          ({"patient": "12",
+                            "timestamp": "2020-06-23 23:11:10"},
+                           "A valid patient id was not "
+                           "provided, try again"),
+                          ({"patient": 12,
+                            "timestamp": 10},
+                           "A valid timestamp was not "
+                           "provided, try again"),
+                          ({"patient": "12",
+                            "timestamp": "2020-06-23 23:11:10",
+                            "age": 10},
+                           "The input dictionary has "
+                           "unusable information, try again")])
+def validate_ECG_image_timestamp(result, expected):
+    from project_server import validate_ECG_image_timestamp
+    answer = validate_ECG_image_timestamp(result)
+    answer = type(answer)
+    assert answer == expected
