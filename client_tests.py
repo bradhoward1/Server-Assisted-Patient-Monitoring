@@ -75,7 +75,7 @@ out = {"medical_record_number": 102,
 r = requests.post(host + "/add_new_patient", json=out)
 print("{}, {}".format(r.text, r.status_code))
 
-print("YOU ARE HERE")
+
 r = requests.get(host + "/patient_list")
 print("{}, {}".format(r.text, r.status_code))
 
