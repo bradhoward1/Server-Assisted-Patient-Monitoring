@@ -172,13 +172,16 @@ def name_latest_hr_and_ECG_image(mr_num):
     patient_name = patient.name
     patient_heart_rates = patient.heart_rates
     patient_ECG_images = patient.ECG_images
+    patient_datetimes = patient.datetimes
     size_of_hr_list = len(patient_heart_rates)
     size_of_patient_ECG_images = len(patient_ECG_images)
     latest_hr = patient_heart_rates[size_of_hr_list-1]
     latest_ECG_image = patient_ECG_images[size_of_patient_ECG_images-1]
+    latest_datetime = patient_datetimes[size_of_hr_list-1]
     out_dict = {"name": patient_name,
                 "latest_hr": latest_hr,
-                "latest_ECG_image": latest_ECG_image}
+                "latest_ECG_image": latest_ECG_image,
+                "latest_datetime": latest_datetime}
     return out_dict
 
 

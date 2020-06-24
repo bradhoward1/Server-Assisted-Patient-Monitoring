@@ -84,17 +84,17 @@ print("{}, {}".format(r.text, r.status_code))
 
 
 out = {"patient": 100,
-	   "timestamp": "2020-06-23 20:40:53"}
+       "timestamp": "2020-06-23 20:40:53"}
 r = requests.post(host + "/ECG_image_timestamp", json=out)
 print("{}, {}".format(r.text, r.status_code))
 
 out = {"patient": "100",
-	   "timestamp": "2020-06-23 20:40:53"}
+       "timestamp": "2020-06-23 20:40:53"}
 r = requests.post(host + "/ECG_image_timestamp", json=out)
 print("{}, {}".format(r.text, r.status_code))
 
 out = {"patient": 100,
-	   "timestamp": "2020-06-23 20:40:53",
-	   "whoops": "foo"}
+       "timestamp": "2020-06-23 20:40:53",
+       "whoops": "foo"}
 r = requests.post(host + "/ECG_image_timestamp", json=out)
 print("{}, {}".format(r.text, r.status_code))
