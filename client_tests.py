@@ -70,3 +70,7 @@ print("{}, {}".format(r.text, r.status_code))
 
 r = requests.get(host + "/name_hr_ecg/100")
 print("{}, {}".format(r.text, r.status_code))
+
+
+r = requests.get(host + "/ECG_timestamps/102")
+print("{}, {}".format(r.text, r.status_code))

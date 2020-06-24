@@ -198,6 +198,15 @@ def timestamps_list(mr_num):
     return patient_timestamp_list
 
 
+@app.route("/ECG_timestamps/<mr_num>", methods=["GET"])
+def get_timestamps_list(mr_num):
+    contents = timestamps_list(mr_num)
+    if contents:
+        return jsonify(contents), 200
+    else:
+        return "Unable to retrieve list of timestamps", 400
+
+
 if __name__ == '__main__':
     __init__()
     app.run()
