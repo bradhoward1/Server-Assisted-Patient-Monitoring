@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/BME547-Summer2020/final-project-audibuild.svg?token=EEjxyoKhwHKXwyPzUy4i&branch=master)](https://travis-ci.com/BME547-Summer2020/final-project-audibuild)
 # Final Project
 
 This README.md file provides an in depth analysis of the functionality of the final-project-audibuild repository.
