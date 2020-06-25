@@ -686,7 +686,7 @@ def medical_image_filename(in_dict):
         patient_file_names.append(image[0])
         patient_images.append(image[1])
     index = patient_file_names.index(patient_filename)
-    patient_image = patient_images[index]
+    patient_image = patient_medical_images[index]
     return patient_image
 
 

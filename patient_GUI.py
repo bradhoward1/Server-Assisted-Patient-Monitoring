@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import requests
 
 
-host = "http://127.0.0.1:5000"
+host = "http://vcm-15218.vm.duke.edu:5000"
 
 
 def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
@@ -26,7 +26,8 @@ def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
     for parameter in list_parameters:
         if parameter == med_record:
             if med_record is None or med_record == "":
-                return "Unable to process request"
+                out_dict = {"medical_record_number": None}
+                return out_dict
             else:
                 out_dict["medical_record_number"] = med_record
         elif parameter == name:
@@ -94,8 +95,8 @@ def design_window():
         root.destroy()
 
     def ok_button_work():
-        nonlocal name, HRS, Fig_name, ECG_to_server, med_record,
-        Converted_IM, output
+        nonlocal name, HRS, Fig_name, ECG_to_server, med_record
+        nonlocal Converted_IM, output
         fn = file_name.get()
         print("Patient Medical Record Number is {}".
               format(medical_record_entry.get()))
