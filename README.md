@@ -1,2 +1,40 @@
-# final_project_template
-BME 547 Final Project
+# Final Project
+
+This README.md file provides an in depth analysis of the functionality of the final-project-audibuild repository.
+
+## Cloud Server
+
+The server is developed in the `project_server.py` Python file. THE SERVER IS CURRENTLY TURNED ON AND LOCATED ON A SEPARATE VIRTUAL MACHINE. The host for this server is "vcm-15218.vm.duke.edu" and is located on port 5000. Thus, when attempting to run functions on the server, the user must ensure that the following is entered as the base URL:
+
+1. "http://vcm-15218.vm.duke.edu:5000"
+
+Within this server, the following functions have been implemented:
+
++ `POST /add_new_patient`
++ `GET /patient_list`
++ `GET /name_hr_ecg/<mr_num>`
++ `GET /ECG_timestamps/<mr_num>`
++ `GET /medical_images/mr_num`
++ `POST /ECG_image_timestamp`
++ `POST /get_medical_image`
+
+The server file within the virtual machine is different than the server file within this repository. To actually access this server outside of the virtual machine, the following `host` parameter is passed to the Flask handler command:
+
+app.run(host="vcm-15218.vm.duke.edu")
+
+With this change, it is possible to carry out functions in the server while outside of the virtual machine. If the user wanted to test the functionality of the server without the GUIs, he could run the `client_tests.py` file. This file will be able to make post and get requests to the server, effectively accessing the database as well. In line 6 of this file is the host name. It is currently set to `http://127.0.0.1:5000` because it assumes that the server is being run locally. If the user wants to test this file with the server running on the virtual machine, this host name must be changed to `http://vcm-15218.vm.duke.edu:5000`. Because the server is running on the virtual machine, this change must be made by the user, or else it will not allow any of the requests to be made.
+
+The server relies on a MongoDB database to store information. A fully complete entry in the database will contain the structure shown below.
+
++ _id: contains the patient's medical record number: allows the server to search for a specific patient
++ name: contains the patient's entered name
++ heart_rates: contains a list of inputted heart rate values
++ medical_images: contains a list of tuples where each tuple contains both a file name and the base 64 string for the given file
++ ECG_images: contains a list of tuples where each tuple contains both a file name and the base 64 string for the given file
++ datetimes: contains a list of strings where each string represents a different timestamp for when a heart rate/ ECG image is entered
+
+This structure allows the Patient-side GUI Client to effectively post new patient information to the database while also allowing the Monitoring Station GUI Client to effectively retrieve information from the database.
+
+## Patient-side GUI Client
+
+The Patient-side GUI Client is focused towards patients looking to enter their information into the database. It first requires that the user at least inputs a medical record number. As long as a medical record number is present, the patient can enter their name, upload a medical image, select an ECG data file, generate a heart rate, and generate an image of the ECG data. To enter a name, the patient should fill in the text box below the Once the user has entered information, the only way to stage the information is through the use of the "Ok" Button located in the GUI. If the user presses the "Ok" Button, then their information is staged and ready to be sent to the server. To actually submit the information to the server, though, it is necessary for the user to use the "Send" Button, as this button employs a command that contains the post request necessary to send information to the server and store it in the MongoDB database.
