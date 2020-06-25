@@ -205,7 +205,7 @@ def design_window():
         HR = patient_data[1]
         patient_data[1] = "Patient Heart Rate: {}".format(HR)
         patient_data[2] = "Datetime: " + patient_data[2].strip("{}")
-        patient_data.append("Medical Record: " + Selected_Medical_Record)
+        patient_data.append("Medical Record: " + y)
         patient_data[3] = patient_data[3].strip("{}")
         MEDR_label = ttk.Label(root, text=patient_data)
         latest_ECG = convert_b64str_to_file(ecg_list)
@@ -214,8 +214,8 @@ def design_window():
         image_label.image = image
         image_label.grid(column=0, row=5)
         MEDR_label.grid(column=3, row=8)
-        Trace_name_list = get_ECG_trace(Selected_Medical_Record)
-        MedIM_list = get_medical_image_list(Selected_Medical_Record)
+        Trace_name_list = get_ECG_trace(y)
+        MedIM_list = get_medical_image_list(y)
         Trace_box['values'] = Trace_name_list
         MEDIM_box['values'] = MedIM_list
 
