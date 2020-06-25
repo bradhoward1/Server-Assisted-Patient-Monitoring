@@ -23,17 +23,13 @@ def load_image_for_display(filename):
     tk_image = ImageTk.PhotoImage(image_obj)
     return tk_image
 
-def convert_b64str_to_file(filename):
-    image_bytes = base64.b64decode(b64_string)
-    with open(new_filename, "wb") as out_file:
-        out_file.write(image_bytes)
-    return decoded_im
-
-def save_b64_image(base64_string):
-    image_bytes = base64.b64decode(base64_string)
-    with open("new-img.jpg", "wb") as out_file:
-        out_file.write(image_bytes)
-
+def convert_b64str_to_file(pic_info):
+    filename = pic_info[0]
+    image_bytes = pic_info[1]
+    decoded_image = base64.b64decode(image_bytes)
+    with open(filename, "wb") as out_file:
+        out_file.write(decoded_image)
+    return filename
 
 def get_medical_records():
     r = requests.get(host + "/patient_list")
@@ -51,13 +47,19 @@ def design_window():
     def get_select_patient_info(Patient):
         r = requests.get(host + "/name_hr_ecg/" + Patient)
         r = r.json()
-        print(r)
         patient_display_list = [r["name"], r["latest_hr"], r["latest_datetime"]]
-        ECG_list = [r["latest_ECG_image"]]
+        ECG_list = r["latest_ECG_image"]
         return patient_display_list, ECG_list
 
+    def get_ECG_trace():
+        nonlocal Selected_Medical_Record
+        r = requests.get(host + "ECG_timestamps/" + Selected_Medical_Record)
+        my_dict = r.json()
+        ECG_images = my_dict["ECG_images"]
+        timestamps = my_dict["timestamps"]
+
     def MEDR_button_work():
-        x = MEDR_select.get()
+        Selected_Medical_Record = MEDR_select.get()
         patient_display_list, ecg_list = get_select_patient_info(x)
         patient_data = patient_display_list
         patient_data[0] = "Patient Name: " + patient_data[0]
@@ -67,12 +69,19 @@ def design_window():
         patient_data.append("Medical Record: " + x)
         patient_data[3] = patient_data[3].strip("{}")
         MEDR_label = ttk.Label(root, text=patient_data)
-        print(ecg_list)
-        # latest_ECG = convert_b64str_to_file(ecg_list[1])
+        latest_ECG = convert_b64str_to_file(ecg_list)
+        image = load_image_for_display(latest_ECG)
+        image_label = ttk.Label(root, image=image)
+        image_label.image = image
+        image_label.grid(column=0, row=5)
+        # print(type(latest_ECG))
         MEDR_label.grid(column=3, row=5)
+        get_ECG_trace()
+
 
     def Trace_select_button():
-        pass
+        nonlocal Selected_Medical_Record
+
 
 
     root = tk.Tk()
@@ -96,11 +105,15 @@ def design_window():
 
     Trace_select = tk.StringVar()
     Trace_select.set("Select Patient ECG Trace")
-    Trace_box = ttk.Combobox(root, width=30, textvariable=MEDR_select)
-    Trace_box['values'] = get_medical_records()
+    Trace_box = ttk.Combobox(root, width=30, textvariable=Trace_select)
+    Trace_box['values'] = get_ECG_trace()
     Trace_box.state(['readonly'])
-    Trace_box.grid(column=4, row=3)
+    Trace_box.grid(column=3, row=3)
 
+    Trace_button = ttk.Button(root, text="Confirm ECG Trace", command=cancel_cmd)
+    Trace_button.grid(column=3, row=2)
+
+    # root.after(3000)
     root.mainloop()
     print("Finished")
 
