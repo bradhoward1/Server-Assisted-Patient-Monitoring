@@ -211,5 +211,5 @@ def test_medical_image_filename():
     in_dict = {"patient": 16,
                "file_name": "jpeg_image"}
     answer = medical_image_filename(in_dict)
-    expected = "yeard"
+    expected = ["jpeg_image", "yeard"]
     assert answer == expected
