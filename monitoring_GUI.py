@@ -14,6 +14,20 @@ host = "http://vcm-15218.vm.duke.edu:5000"
 
 
 def load_image_for_display(filename):
+    """Loads image for viewing
+
+    Processes image for viewing and resizes appropriately
+    to conform to the dimensions of the GUI.
+
+    Parameters
+    ----------
+    filename : string
+        String containing the filename of the designated file
+
+    Returns
+    -------
+    PhotoImage
+    Desired image to be displayed"""
     image_obj = Image.open(filename)
     width, height = image_obj.size
     new_width = int(200)
@@ -23,7 +37,22 @@ def load_image_for_display(filename):
     return tk_image
 
 def convert_b64str_to_file(pic_info):
+    """Converts encoded image to file
+
+    Processes image for viewing and resizes appropriately
+    to conform to the dimensions of the GUI.
+
+    Parameters
+    ----------
+    pic_info : string
+        String containing the filename of the designated file
+
+    Returns
+    -------
+    PhotoImage
+    Desired image to be displayed"""
     filename = pic_info[0]
+    print(filename)
     image_bytes = pic_info[1]
     decoded_image = base64.b64decode(image_bytes)
     with open(filename, "wb") as out_file:
@@ -115,12 +144,18 @@ def design_window():
     def MED_IM_select_button():
         Selected_image = MEDIM_select.get()
         Returned_image = get_medical_image(Selected_image)
-        print(Returned_image)
         Medical_Image = convert_b64str_to_file(Returned_image)
-        # image = load_image_for_display(Medical_Image)
-        # image_label = ttk.Label(root, image=image)
-        # image_label.image = image
-        # image_label.grid(column=5, row=5)
+        image = load_image_for_display(Medical_Image)
+        image_label = ttk.Label(root, image=image)
+        image_label.image = image
+        image_label.grid(column=5, row=5)
+
+    def reset_cmd():
+        MEDR_select = None
+        Trace_select = None
+        MEDIM_select = None
+        plt.clf()
+
 
 
     root = tk.Tk()
@@ -161,6 +196,9 @@ def design_window():
 
     MEDIM_button = ttk.Button(root, text="Confirm Medical Image", command=MED_IM_select_button)
     MEDIM_button.grid(column=4, row=2)
+
+    reset_button = ttk.Button(root, text="Reset", command=reset_cmd)
+    reset_button.grid(column=5, row=5)
 
     root.after(3000)
     root.mainloop()
