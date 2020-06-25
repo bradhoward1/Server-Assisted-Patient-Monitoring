@@ -18,6 +18,34 @@ host = "http://vcm-15218.vm.duke.edu:5000"
 
 def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
                    Med_Image_FN, Conv_MedI):
+    """Prepares data for extraction and and upload to the server
+
+    Retrieves all parameters necessary for the monitoring GUI
+    and prepares them for extraction in a dictionary. Verifies that
+    these parameters satisfy the imposed constraints such that
+    they do not interfere with the server's functioning.
+
+    Parameters
+    ----------
+    name : string
+        patient name
+    HRS : int
+        patient average heart rate
+    Fig_name : string
+        name of generated ECG plot
+    ECG_to_server : string
+        encoded ECG plot
+    med_record : string
+        patient medical record number
+    Med_Image_FN : string
+        filename of selected medical image
+    Conv_MedI : string
+        encoded medical image
+
+    Returns
+    -------
+    Dictionary
+        Output information to server"""
     # Post request to server, create dictionary here
     out_dict = {}
     list_parameters = [name, HRS, Fig_name, ECG_to_server, med_record,
@@ -64,6 +92,18 @@ def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
 
 
 def get_available_files():
+    """Retrieves existing patient data files
+
+    Retrieves all files in the test_data folder.
+
+    Parameters
+    ----------
+    N/A
+
+    Returns
+    -------
+    List
+        List of file names as strings"""
     import os
     all_files = os.listdir("test_data/")
     files = [f for f in all_files if ".csv" in f]
@@ -72,6 +112,20 @@ def get_available_files():
 
 
 def load_image_for_display(filename):
+    """Loads image for viewing
+
+    Processes image for viewing and resizes appropriately
+    to conform to the dimensions of the GUI.
+
+    Parameters
+    ----------
+    filename : string
+        String containing the filename of the designated file
+
+    Returns
+    -------
+    PhotoImage
+    Desired image to be displayed"""
     print(filename)
     image_obj = Image.open(filename)
     width, height = image_obj.size
@@ -83,6 +137,19 @@ def load_image_for_display(filename):
 
 
 def convert_file_to_b64str(filename):
+    """Converts file to encoded image
+
+    Processes image for upload to server and saves the image.
+
+    Parameters
+    ----------
+    filename : string
+        String with name of file
+
+    Returns
+    -------
+    String
+        Decoded image"""
     with open(filename, "rb") as image_file:
         b64_bytes = base64.b64encode(image_file.read())
     b64_string = str(b64_bytes, encoding='utf-8')
@@ -90,11 +157,47 @@ def convert_file_to_b64str(filename):
 
 
 def design_window():
+    """Creates Interface
+
+    Creates the GUI to display all necessary information
+
+    Parameters
+    ----------
+    N/A
+
+    Returns
+    -------
+    N/A"""
 
     def cancel_cmd():
+         """Terminates interface
+
+        Closes out interface
+
+        Parameters
+        ----------
+        N/A
+
+        Returns
+        -------
+        N/A"""
         root.destroy()
 
     def ok_button_work():
+         """Ok button method
+
+        Obtains data from designated patient medical record
+        such as patient name, calculates average heart rate
+        data, and grabs appropriate timestamp. Generates
+        corresponding plots with input data.
+
+        Parameters
+        ----------
+        N/A
+
+        Returns
+        -------
+        N/A"""
         nonlocal name, HRS, Fig_name, ECG_to_server, med_record
         nonlocal Converted_IM, output
         fn = file_name.get()
@@ -135,17 +238,52 @@ def design_window():
                                 med_record, fn, Converted_IM)
 
     def post_cmd():
+         """Posts new patient info to the server
+
+        Completes the post request of patient information
+        to the server. 
+
+        Parameters
+        ----------
+        N/A
+
+        Returns
+        -------
+        N/A"""
         print("Running post command")
         fn = file_name.get()
         r = requests.post(host + "/add_new_patient", json=output)
         print("{}, {}".format(r.text, r.status_code))
 
     def upload_img():
+         """Converts image
+
+        Method encodes image from PhotoImage
+        to string.
+
+        Parameters
+        ----------
+        N/A
+
+        Returns
+        -------
+        N/A"""
         fn = file_name.get()
         b64 = convert_file_to_b64str(fn)
         return b64
 
     def get_picture():
+         """Grabs designated picture for display
+
+        Displays selected image in the GUI
+
+        Parameters
+        ----------
+        N/A
+
+        Returns
+        -------
+        N/A"""
         nonlocal Converted_IM
         fn = filedialog.askopenfilename()
         file_name.set(fn)
