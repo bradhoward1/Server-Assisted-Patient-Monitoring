@@ -170,7 +170,7 @@ def design_window():
     N/A"""
 
     def cancel_cmd():
-         """Terminates interface
+        """Terminates interface
 
         Closes out interface
 
@@ -184,7 +184,7 @@ def design_window():
         root.destroy()
 
     def ok_button_work():
-         """Ok button method
+        """Ok button method
 
         Obtains data from designated patient medical record
         such as patient name, calculates average heart rate
@@ -238,10 +238,10 @@ def design_window():
                                 med_record, fn, Converted_IM)
 
     def post_cmd():
-         """Posts new patient info to the server
+        """Posts new patient info to the server
 
         Completes the post request of patient information
-        to the server. 
+        to the server.
 
         Parameters
         ----------
@@ -256,7 +256,7 @@ def design_window():
         print("{}, {}".format(r.text, r.status_code))
 
     def upload_img():
-         """Converts image
+        """Converts image
 
         Method encodes image from PhotoImage
         to string.
@@ -273,7 +273,7 @@ def design_window():
         return b64
 
     def get_picture():
-         """Grabs designated picture for display
+        """Grabs designated picture for display
 
         Displays selected image in the GUI
 
