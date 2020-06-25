@@ -162,7 +162,7 @@ def design_window():
     MEDIM_button = ttk.Button(root, text="Confirm Medical Image", command=MED_IM_select_button)
     MEDIM_button.grid(column=4, row=2)
 
-    # root.after(3000)
+    root.after(3000)
     root.mainloop()
     print("Finished")
 
