@@ -14,7 +14,6 @@ host = "http://vcm-15218.vm.duke.edu:5000"
 
 
 def load_image_for_display(filename):
-    print(filename)
     image_obj = Image.open(filename)
     width, height = image_obj.size
     new_width = int(200)
@@ -56,7 +55,6 @@ def design_window():
         r = requests.get(host + "/ECG_timestamps/" + Patient)
         my_dict = r.json()
         ECG_images = my_dict["ECG_images"]
-        # print(ECG_images)
         timestamps = my_dict["timestamps"]
         return timestamps
 
@@ -82,20 +80,18 @@ def design_window():
         image_label = ttk.Label(root, image=image)
         image_label.image = image
         image_label.grid(column=0, row=5)
-        # print(type(latest_ECG))
-        MEDR_label.grid(column=3, row=5)
+        MEDR_label.grid(column=3, row=8)
         Trace_name_list = get_ECG_trace(Selected_Medical_Record)
         MedIM_list = get_medical_image_list(Selected_Medical_Record)
         Trace_box['values'] = Trace_name_list
         MEDIM_box['values'] = MedIM_list
-        # print(Trace_name_list)
 
     def get_ecg_picture(ecg_timestamp):
         Selected_Medical_Record = int(MEDR_select.get())
         ECG_dict = {"patient": Selected_Medical_Record, "timestamp": ecg_timestamp}
         r = requests.post(host + "/ECG_image_timestamp", json=ECG_dict)
         # takes ecg timestamp and returns encoded image
-        r = r.text
+        r = r.json()
         return r
 
     def get_medical_image(MED_filename):
@@ -103,20 +99,28 @@ def design_window():
         Selected_Medical_Record = int(MEDR_select.get())
         MED_dict = {"patient": Selected_Medical_Record, "file_name": MED_filename}
         r = requests.post(host + "/get_medical_image", json=MED_dict)
-        r = r.text
+        r = r.json()
         return r
 
     def Trace_select_button():
         Selected_trace = Trace_select.get()
-        print(Selected_trace)
         Returned_Trace = get_ecg_picture(Selected_trace)
-        print(Returned_Trace)
+        Side_ECG = convert_b64str_to_file(Returned_Trace)
+        image = load_image_for_display(Side_ECG)
+        image_label = ttk.Label(root, image=image)
+        image_label.image = image
+        image_label.grid(column=3, row=5)
 
 
     def MED_IM_select_button():
         Selected_image = MEDIM_select.get()
         Returned_image = get_medical_image(Selected_image)
         print(Returned_image)
+        Medical_Image = convert_b64str_to_file(Returned_image)
+        # image = load_image_for_display(Medical_Image)
+        # image_label = ttk.Label(root, image=image)
+        # image_label.image = image
+        # image_label.grid(column=5, row=5)
 
 
     root = tk.Tk()
