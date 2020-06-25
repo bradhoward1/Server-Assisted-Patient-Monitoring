@@ -58,7 +58,12 @@ def design_window():
         ECG_images = my_dict["ECG_images"]
         # print(ECG_images)
         timestamps = my_dict["timestamps"]
-        return ECG_images
+        return timestamps
+
+    def get_medical_image_list(Patient):
+        r = requests.get(host + "/medical_images/" + Patient)
+        r = r.json()
+        return r
 
     def MEDR_button_work():
         nonlocal Trace_name_list
@@ -80,15 +85,38 @@ def design_window():
         # print(type(latest_ECG))
         MEDR_label.grid(column=3, row=5)
         Trace_name_list = get_ECG_trace(Selected_Medical_Record)
-        print(Trace_name_list)
+        MedIM_list = get_medical_image_list(Selected_Medical_Record)
+        Trace_box['values'] = Trace_name_list
+        MEDIM_box['values'] = MedIM_list
+        # print(Trace_name_list)
 
+    def get_ecg_picture(ecg_timestamp):
+        Selected_Medical_Record = int(MEDR_select.get())
+        ECG_dict = {"patient": Selected_Medical_Record, "timestamp": ecg_timestamp}
+        r = requests.post(host + "/ECG_image_timestamp", json=ECG_dict)
+        # takes ecg timestamp and returns encoded image
+        r = r.text
+        return r
+
+    def get_medical_image(MED_filename):
+        # takes medical im filename and returns encoded image
+        Selected_Medical_Record = int(MEDR_select.get())
+        MED_dict = {"patient": Selected_Medical_Record, "file_name": MED_filename}
+        r = requests.post(host + "/get_medical_image", json=MED_dict)
+        r = r.text
+        return r
 
     def Trace_select_button():
-        # nonlocal Selected_Medical_Record
-        pass
+        Selected_trace = Trace_select.get()
+        print(Selected_trace)
+        Returned_Trace = get_ecg_picture(Selected_trace)
+        print(Returned_Trace)
+
 
     def MED_IM_select_button():
-        pass
+        Selected_image = MEDIM_select.get()
+        Returned_image = get_medical_image(Selected_image)
+        print(Returned_image)
 
 
     root = tk.Tk()
@@ -114,22 +142,20 @@ def design_window():
     Trace_select = tk.StringVar()
     Trace_select.set("Select Patient ECG Trace")
     Trace_box = ttk.Combobox(root, width=30, textvariable=Trace_select)
-    Trace_box['values'] = get_ECG_trace(MEDR_select.get())
     Trace_box.state(['readonly'])
     Trace_box.grid(column=3, row=3)
 
-    Trace_button = ttk.Button(root, text="Confirm ECG Trace", command=cancel_cmd)
+    Trace_button = ttk.Button(root, text="Confirm ECG Trace", command=Trace_select_button)
     Trace_button.grid(column=3, row=2)
 
 
     MEDIM_select = tk.StringVar()
     MEDIM_select.set("Select Patient Medical Image")
     MEDIM_box = ttk.Combobox(root, width=30, textvariable=MEDIM_select)
-    MEDIM_box['values'] = None
     MEDIM_box.state(['readonly'])
     MEDIM_box.grid(column=4, row=3)
 
-    MEDIM_button = ttk.Button(root, text="Confirm Medical Image", command=cancel_cmd)
+    MEDIM_button = ttk.Button(root, text="Confirm Medical Image", command=MED_IM_select_button)
     MEDIM_button.grid(column=4, row=2)
 
     # root.after(3000)
