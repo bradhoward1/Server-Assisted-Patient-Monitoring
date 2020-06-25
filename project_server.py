@@ -6,7 +6,7 @@ from pymodm import connect, MongoModel, fields
 import PIL
 
 connect("mongodb+srv://brad_howard:NA@cluster0-lucsp.mongodb.net"
-        "/another_rando?retryWrites=true&w=majority")
+        "/final_database?retryWrites=true&w=majority")
 
 
 app = Flask(__name__)

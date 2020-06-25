@@ -26,8 +26,7 @@ def posting_method(name, HRS, Fig_name, ECG_to_server, med_record,
     for parameter in list_parameters:
         if parameter == med_record:
             if med_record is None or med_record == "":
-                out_dict = {"medical_record_number": None}
-                return out_dict
+                continue
             else:
                 out_dict["medical_record_number"] = med_record
         elif parameter == name:
