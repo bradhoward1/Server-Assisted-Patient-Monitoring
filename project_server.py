@@ -41,7 +41,7 @@ def add_new_patient_to_db(in_dict):
     ----------
     in_dict : dict
         Gives the patient information
-    
+
     Returns
     -------
     bool
