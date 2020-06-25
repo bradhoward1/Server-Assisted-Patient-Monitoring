@@ -44,6 +44,7 @@ def design_window():
     def cancel_cmd():
         root.destroy()
 
+
     def get_select_patient_info(Patient):
         r = requests.get(host + "/name_hr_ecg/" + Patient)
         r = r.json()
@@ -51,22 +52,24 @@ def design_window():
         ECG_list = r["latest_ECG_image"]
         return patient_display_list, ECG_list
 
-    def get_ECG_trace():
-        nonlocal Selected_Medical_Record
-        r = requests.get(host + "ECG_timestamps/" + Selected_Medical_Record)
+    def get_ECG_trace(Patient):
+        r = requests.get(host + "/ECG_timestamps/" + Patient)
         my_dict = r.json()
         ECG_images = my_dict["ECG_images"]
+        # print(ECG_images)
         timestamps = my_dict["timestamps"]
+        return ECG_images
 
     def MEDR_button_work():
+        nonlocal Trace_name_list
         Selected_Medical_Record = MEDR_select.get()
-        patient_display_list, ecg_list = get_select_patient_info(x)
+        patient_display_list, ecg_list = get_select_patient_info(Selected_Medical_Record)
         patient_data = patient_display_list
         patient_data[0] = "Patient Name: " + patient_data[0]
         HR = patient_data[1]
         patient_data[1] = "Patient Heart Rate: {}".format(HR)
         patient_data[2] = "Datetime: " + patient_data[2].strip("{}")
-        patient_data.append("Medical Record: " + x)
+        patient_data.append("Medical Record: " + Selected_Medical_Record )
         patient_data[3] = patient_data[3].strip("{}")
         MEDR_label = ttk.Label(root, text=patient_data)
         latest_ECG = convert_b64str_to_file(ecg_list)
@@ -76,12 +79,16 @@ def design_window():
         image_label.grid(column=0, row=5)
         # print(type(latest_ECG))
         MEDR_label.grid(column=3, row=5)
-        get_ECG_trace()
+        Trace_name_list = get_ECG_trace(Selected_Medical_Record)
+        print(Trace_name_list)
 
 
     def Trace_select_button():
-        nonlocal Selected_Medical_Record
+        # nonlocal Selected_Medical_Record
+        pass
 
+    def MED_IM_select_button():
+        pass
 
 
     root = tk.Tk()
@@ -103,15 +110,27 @@ def design_window():
     cancel_button = ttk.Button(root, text="Cancel", command=cancel_cmd)
     cancel_button.grid(column=5, row=4)
 
+    Trace_name_list = None
     Trace_select = tk.StringVar()
     Trace_select.set("Select Patient ECG Trace")
     Trace_box = ttk.Combobox(root, width=30, textvariable=Trace_select)
-    Trace_box['values'] = get_ECG_trace()
+    Trace_box['values'] = get_ECG_trace(MEDR_select.get())
     Trace_box.state(['readonly'])
     Trace_box.grid(column=3, row=3)
 
     Trace_button = ttk.Button(root, text="Confirm ECG Trace", command=cancel_cmd)
     Trace_button.grid(column=3, row=2)
+
+
+    MEDIM_select = tk.StringVar()
+    MEDIM_select.set("Select Patient Medical Image")
+    MEDIM_box = ttk.Combobox(root, width=30, textvariable=MEDIM_select)
+    MEDIM_box['values'] = None
+    MEDIM_box.state(['readonly'])
+    MEDIM_box.grid(column=4, row=3)
+
+    MEDIM_button = ttk.Button(root, text="Confirm Medical Image", command=cancel_cmd)
+    MEDIM_button.grid(column=4, row=2)
 
     # root.after(3000)
     root.mainloop()
