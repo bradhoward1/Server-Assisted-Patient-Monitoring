@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.com/BME547-Summer2020/final-project-audibuild.svg?token=EEjxyoKhwHKXwyPzUy4i&branch=master)](https://travis-ci.com/BME547-Summer2020/final-project-audibuild)
 # Final Project
 
-This README.md file provides an in depth analysis of the functionality of the final-project-audibuild repository.
+This README.md file provides an in depth analysis of the functionality of the final-project-audibuild repository. 
+
+##### NOTE: THE BUILD ERRORS ARE OCCURRING BECAUSE THE SERVER IS UNABLE TO ACCESS THE DATABASE DUE TO SECURITY ISSUES WITH PUBLIC PASSWORDS ON GITHUB
 
 ## Cloud Server
 
